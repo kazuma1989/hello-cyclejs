@@ -1,4 +1,4 @@
-import xs, { Observable } from "xstream";
+import { Observable } from "xstream";
 import { run } from "@cycle/run";
 import {
   makeDOMDriver,
@@ -20,12 +20,13 @@ type Sinks = {
 };
 
 function main({ DOM }: Sources): Sinks {
-  const input$: Observable<Event> = DOM.select("input").events(
-    "input"
-  );
+  const name$ = DOM.select("input")
+    .events("input")
+    .map(ev => (ev.target as HTMLInputElement).value)
+    .startWith("");
 
   return {
-    DOM: xs.of(
+    DOM: name$.map(name =>
       div(
         ".ui.container",
         {
@@ -34,7 +35,7 @@ function main({ DOM }: Sources): Sinks {
           }
         },
         [
-          h1(".ui.header", ["Hello Cycle.js"]),
+          h1(".ui.header", [`Hello ${name || "Cycle.js"}!`]),
           form(".ui.form", [
             div(".field", [
               label(["Name"]),
