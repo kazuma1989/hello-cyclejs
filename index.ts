@@ -1,54 +1,43 @@
-import { Observable } from "xstream";
+import xs, { Stream } from "xstream";
 import { run } from "@cycle/run";
-import {
-  makeDOMDriver,
-  DOMSource,
-  VNode,
-  div,
-  form,
-  label,
-  input,
-  h1
-} from "@cycle/dom";
+import { makeDOMDriver, DOMSource, VNode, div } from "@cycle/dom";
+import HelloInput from "./HelloInput";
 
 type Sources = {
   DOM: DOMSource;
 };
 
 type Sinks = {
-  DOM: Observable<VNode>;
+  DOM: Stream<VNode>;
 };
 
 function main({ DOM }: Sources): Sinks {
-  const name$ = DOM.select("input")
-    .events("input")
-    .map(ev => (ev.target as HTMLInputElement).value)
-    .startWith("");
+  const helloInputDom1$ = HelloInput({ DOM }).DOM;
+  const helloInputDom2$ = HelloInput({ DOM }).DOM;
 
   return {
-    DOM: name$.map(name =>
-      div(
-        ".ui.container",
-        {
-          attrs: {
-            style: "margin-top: 3rem;"
-          }
-        },
-        [
-          h1(".ui.header", [`Hello ${name || "Cycle.js"}!`]),
-          form(".ui.form", [
-            div(".field", [
-              label(["Name"]),
-              input({
-                attrs: {
-                  type: "text"
-                }
-              })
-            ])
-          ])
-        ]
+    DOM: xs
+      .combine(helloInputDom1$, helloInputDom2$)
+      .map(([helloInputDom1, helloInputDom2]) =>
+        div(".ui.container", [
+          div(
+            {
+              attrs: {
+                style: "margin-top: 5rem;"
+              }
+            },
+            [helloInputDom1]
+          ),
+          div(
+            {
+              attrs: {
+                style: "margin-top: 3rem;"
+              }
+            },
+            [helloInputDom2]
+          )
+        ])
       )
-    )
   };
 }
 
