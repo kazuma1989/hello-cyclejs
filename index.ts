@@ -12,8 +12,14 @@ type Sinks = {
 };
 
 function main({ DOM }: Sources): Sinks {
-  const helloInputDom1$ = HelloInput({ DOM }).DOM;
-  const helloInputDom2$ = HelloInput({ DOM }).DOM;
+  const helloInputDom1$ = HelloInput({
+    DOM,
+    props: { className: ".foo" }
+  }).DOM;
+  const helloInputDom2$ = HelloInput({
+    DOM,
+    props: { className: ".bar" }
+  }).DOM;
 
   return {
     DOM: xs

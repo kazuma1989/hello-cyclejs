@@ -1,16 +1,21 @@
 import { Stream } from "xstream";
 import { DOMSource, VNode, div, form, label, input, h1 } from "@cycle/dom";
 
+type Props = {
+  className: string;
+};
+
 type Sources = {
   DOM: DOMSource;
+  props: Props;
 };
 
 type Sinks = {
   DOM: Stream<VNode>;
 };
 
-export default function HelloInput({ DOM }: Sources): Sinks {
-  const name$ = DOM.select("input")
+export default function HelloInput({ DOM, props }: Sources): Sinks {
+  const name$ = DOM.select(props.className)
     .events("input")
     .map(ev => (ev.target as HTMLInputElement).value)
     .startWith("");
@@ -22,7 +27,7 @@ export default function HelloInput({ DOM }: Sources): Sinks {
         form(".ui.form", [
           div(".field", [
             label(["Name"]),
-            input({
+            input(props.className, {
               attrs: {
                 type: "text"
               }
