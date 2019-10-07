@@ -20,6 +20,10 @@ type Sinks = {
 };
 
 function main({ DOM }: Sources): Sinks {
+  const input$: Observable<Event> = DOM.select("input").events(
+    "input"
+  );
+
   return {
     DOM: xs.of(
       div(
