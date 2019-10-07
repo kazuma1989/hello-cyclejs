@@ -1,6 +1,6 @@
 import xs, { Observable } from "xstream";
 import { run } from "@cycle/run";
-import { makeDOMDriver, DOMSource, VNode } from "@cycle/dom";
+import { makeDOMDriver, DOMSource, VNode, div } from "@cycle/dom";
 
 type Sources = {
   DOM: DOMSource;
@@ -11,7 +11,9 @@ type Sinks = {
 };
 
 function main({ DOM }: Sources): Sinks {
-  return null;
+  return {
+    DOM: xs.of(div(".hello", ["Hello world"]))
+  };
 }
 
 const drivers = {
