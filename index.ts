@@ -1,6 +1,15 @@
 import xs, { Observable } from "xstream";
 import { run } from "@cycle/run";
-import { makeDOMDriver, DOMSource, VNode, div } from "@cycle/dom";
+import {
+  makeDOMDriver,
+  DOMSource,
+  VNode,
+  div,
+  form,
+  label,
+  input,
+  h1
+} from "@cycle/dom";
 
 type Sources = {
   DOM: DOMSource;
@@ -12,7 +21,29 @@ type Sinks = {
 
 function main({ DOM }: Sources): Sinks {
   return {
-    DOM: xs.of(div(".hello", ["Hello world"]))
+    DOM: xs.of(
+      div(
+        ".ui.container",
+        {
+          attrs: {
+            style: "margin-top: 3rem;"
+          }
+        },
+        [
+          h1(".ui.header", ["Hello Cycle.js"]),
+          form(".ui.form", [
+            div(".field", [
+              label(["Name"]),
+              input({
+                attrs: {
+                  type: "text"
+                }
+              })
+            ])
+          ])
+        ]
+      )
+    )
   };
 }
 
